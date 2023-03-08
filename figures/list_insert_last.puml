@@ -1,0 +1,27 @@
+@startuml list_insert_last
+!define LIGHTBLUE
+!includeurl https://gist.githubusercontent.com/amgs/de57560012a8a5f0e4240f392b678a40/raw/c903c6b4f16b60b5eef3248f093497faae378f51/style.puml
+start
+:Ao iniciar a inserção de um elemento no final da lista,
+recebe um apontador para a lista e outro para o elemento:
+""void list_insert_last(List list, void* element)"";
+:Cria um novo nó com a referência para o elemento:
+""Node node = malloc(sizeof(struct Node_));""
+""node->next = NULL;""
+""node->element = element;"";
+:Verifica se a lista está vazia.;
+if (""list_is_empty(list)"") then (""true"")
+    :Como a cabeça não existe,
+    esta passa a ser igual ao novo nó:
+    ""list->head = node;"";
+else (""false"")
+    :Como a cauda existe, então o seu
+    próximo nó passa a ser igual ao novo nó:
+    ""list->tail->next = node;"";
+endif
+:A cauda passa a ser o novo nó:
+""list->tail = node;"";
+:Aumenta o número de elementos:
+""list->size++;"";
+stop
+@enduml

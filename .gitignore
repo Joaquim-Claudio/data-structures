@@ -1,0 +1,8 @@
+bin/*
+*/bin/*
+cov/*
+*gcov
+*gcno
+*gcda
+*.o
+.vscode/*
