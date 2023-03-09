@@ -69,7 +69,7 @@ void* list_get_last(List list);
  * @param position The position of the element to return.
  * @return void* The element at the specified position in the list.
  */
-void* list_get(List list, size_t position);
+void* list_get(List list, int position);
 
 /**
  * @brief Returns the position in the list of the first occurrence of the specified element.
@@ -110,7 +110,7 @@ void list_insert_last(List list, void* element);
  * @param element The element to insert.
  * @param position The position at which to insert the specified element.
  */
-void list_insert(List list, void* element, size_t position);
+void list_insert(List list, void* element, int position);
 
 /**
  * @brief Removes and returns the element at the first position in the list.
@@ -137,7 +137,7 @@ void* list_remove_last(List list);
  * @param position The position of the element to remove.
  * @return void* The element at the specified position in the list.
  */
-void* list_remove(List list, size_t position);
+void* list_remove(List list, int position);
 
 /**
  * @brief Removes all elements from the list.
