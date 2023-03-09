@@ -20,7 +20,7 @@ Para obter as alterações mais recentes ao repositório é necessário:
 
 1. Registar o repositório como referência remota `upstream`:
 
-        git remote add upstream https://github.com/IADE-PA/lists
+        git remote add upstream https://github.com/IADE-PA/linked-lists
 
 2. Obter as alterações para a máquina local:
 
