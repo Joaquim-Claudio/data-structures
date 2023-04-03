@@ -1,5 +1,6 @@
 #include "list.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef struct Node_* Node;
 
@@ -130,24 +131,20 @@ void* list_get(List list, int position){
 int list_find(List list, bool (*equal)(void*, void*), void* element){
     if(list_is_empty(list)){
         return -1;
-    }else{
-        if(element == list->head->element){
-            return 0;
-        }else if(element == list->tail->element){
-            return list->size-1;
-        }
-        
-        Node this_node = list->head->next;
-
-        for(int i = 1; i < list->size-1; i++){
-            if(equal(element, this_node->element)){
-                return i;
-            }else{
-                this_node = this_node->next;
-            }
-        }
-        return -1;
     }
+    if(element == list->head->element){
+        return 0;
+    }
+    Node this_node = list->head->next;
+    int position = 1;
+    while(this_node != NULL){
+        if(equal(this_node->element, element)){
+            return position;
+        }
+        this_node = this_node->next;
+        position++;
+    }
+    return -1;
 }
 
 /**
@@ -243,7 +240,24 @@ void* list_remove_first(List list){
  * @return void* The element at the last position in the list.
  */
 void* list_remove_last(List list){
-    return NULL;
+    if(list_is_empty(list)){
+        return NULL;
+    }
+    Node node = list->tail;
+    if(list_size(list) == 1){
+        list->head = NULL;
+        list->tail = NULL;
+    }else{
+        Node new_tail = list->head;
+        while(new_tail->next != list->tail){
+            new_tail = new_tail->next;
+        }
+        new_tail->next = NULL;
+        list->tail = new_tail;
+    }
+    
+    list->size--;
+    return node->element;
 }
 
 /**
@@ -256,7 +270,27 @@ void* list_remove_last(List list){
  * @return void* The element at the specified position in the list.
  */
 void* list_remove(List list, int position){
-    return NULL;
+    if(list_is_empty(list)){
+        return NULL;
+    }
+    if(position < 0 || position > list->size-1){
+        return NULL;
+    }
+    if(position == 0){
+        return list_remove_first(list);
+    }
+    if(position == list->size-1){
+        return list_remove_last(list);
+    }
+    Node node = list->head;
+    for(int i = 0; i < position-1; i++){
+        node = node->next;
+    }
+    Node deleted_node = node->next; 
+    node->next = node->next->next;
+    list->size--;
+    return deleted_node->element;
+    
 }
 
 /**
@@ -266,7 +300,11 @@ void* list_remove(List list, int position){
  * @param free_element The function to free the elements of the list.
  */
 void list_make_empty(List list, void (*free_element)(void*)){
-    return NULL;
+    while(!list_is_empty(list)){
+        void* element = list_remove_first(list);
+        if(free_element != NULL)
+        free_element(element);
+    }
 }
 
 /**
@@ -276,7 +314,13 @@ void list_make_empty(List list, void (*free_element)(void*)){
  * @param out_array The array to fill with the elements of the list.
  */
 void list_to_array(List list, void** out_array){
-    return NULL;
+        Node node = list->head;
+        int i=0;
+        while(node != NULL){
+            out_array[i] = node->element;
+            node = node->next;
+            i++;
+        }
 }
 
 /**
@@ -288,7 +332,15 @@ void list_to_array(List list, void** out_array){
  * @return int The number of occurrences on an element.
  */
 int list_count_all(List list, bool (*equal)(void*, void*), void* element){
-    return NULL;
+    Node node = list->head;
+    int occurrences_num = 0;
+    while(node != NULL){
+        if(equal(node->element, element)){
+            occurrences_num++;
+        }
+        node = node->next;
+    }
+    return occurrences_num;
 }
 
 /**
@@ -301,7 +353,19 @@ int list_count_all(List list, bool (*equal)(void*, void*), void* element){
  * @return int The number of occurrences on an element.
  */
 int list_remove_all(List list, bool (*equal_element)(void*, void*), void (*free_element)(void*), void* element){
-    return NULL;
+    Node node = list->head;
+    int occurrences_num = 0;
+    while(node != NULL){
+        if(equal_element(node->element, element)){
+            occurrences_num++;
+            void* removed_element = list_remove(list, list_find(list, equal_element, element));
+            if(free_element != NULL){
+                free_element(removed_element);
+            }
+        }
+        node = node->next;
+    }
+    return occurrences_num;
 }
 
 /**
@@ -389,3 +453,39 @@ List list_map(List list, void* (*func)(void*)){
 List list_filter(List list, bool (*func)(void*)){
     return NULL;
 }
+
+// bool equal(char* e1, char* e2){
+//     return strcmp(e1, e2) == 0;
+// }
+
+// int main(){
+
+//     List list = list_create();
+//     char* array[] = {"one", "two", "three"};
+//     for(int i = 0; i < 3; i++){
+//         list_insert_last(list, array[i]);
+//     }
+//     for(int i = 0; i < 3; i++){
+//         list_insert_last(list, array[i]);
+//     }
+    
+//     Node node = list->head;
+//     for(int i = 0; i < 6; i++){
+//         printf("%s\n", (char*)node->element);
+//         node = node->next;
+//     }
+//     printf("%d\n", list_remove_all(list, equal, NULL, (void*)array[1]));
+//     node = list->head;
+//     for(int i = 0; i < 4; i++){
+//         printf("%s\n", (char*)node->element);
+//         node = node->next;
+//     }
+//     node = list->head;
+//     printf("%d\n", list_remove_all(list, equal, NULL, (void*)array[2]));
+//     for(int i = 0; i < 3; i++){
+//         printf("%s\n", (char*)node->element);
+//         node = node->next;
+//     }
+
+//     return 0;
+// }
