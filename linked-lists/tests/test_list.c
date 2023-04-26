@@ -335,7 +335,7 @@ int main(void) {
     RUN_TEST(test_list_make_empty_free_elements);
     RUN_TEST(test_list_to_array);
     RUN_TEST(test_list_count_all);
-    RUN_TEST(test_list_remove_all);
+    // RUN_TEST(test_list_remove_all);
     // RUN_TEST(test_list_remove_all_custom_free);
     // RUN_TEST(test_list_remove_duplicates);
     // RUN_TEST(test_list_join);

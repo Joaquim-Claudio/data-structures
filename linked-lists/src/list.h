@@ -248,4 +248,14 @@ List list_map(List list, void* (*func)(void*));
  */
 List list_filter(List list, bool (*func)(void*));
 
+
+// Starts the iteration of the list.
+void list_iterator_start (List list);
+
+// Returns true if the list iterator has more elements.
+bool list_iterator_has_next (List list);
+
+// Returns the next element of the current list iterator.
+void* list_iterator_get_next (List list);
+
 #endif

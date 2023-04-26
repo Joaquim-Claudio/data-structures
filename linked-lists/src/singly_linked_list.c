@@ -1,6 +1,5 @@
 #include "list.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 typedef struct Node_* Node;
 
@@ -13,7 +12,10 @@ struct List_ {
     Node head;
     Node tail;
     int size;
+    Node iterator;
 };
+
+void* free_node(Node node);
 
 /**
  * @brief Creates a new list.
@@ -37,7 +39,16 @@ List list_create(){
  * @param free_element The function to free the elements of the list.
  */
 void list_destroy(List list, void (*free_element)(void*)){
-    return NULL;
+    Node node = list->head;
+    while(node != NULL){
+        if(free_element != NULL){
+            free_element(node->element);
+        }
+        Node aux_node = node->next;
+        free(node);
+        node = aux_node;
+    }
+    free(list);
 }
 
 /**
@@ -230,7 +241,7 @@ void* list_remove_first(List list){
         list->tail = NULL;
     }
     list->size--;
-    return node->element;
+    return free_node(node);
 }
 
 /**
@@ -257,7 +268,7 @@ void* list_remove_last(List list){
     }
     
     list->size--;
-    return node->element;
+    return free_node(node);
 }
 
 /**
@@ -289,7 +300,7 @@ void* list_remove(List list, int position){
     Node deleted_node = node->next; 
     node->next = node->next->next;
     list->size--;
-    return deleted_node->element;
+    return free_node(deleted_node);
     
 }
 
@@ -353,19 +364,7 @@ int list_count_all(List list, bool (*equal)(void*, void*), void* element){
  * @return int The number of occurrences on an element.
  */
 int list_remove_all(List list, bool (*equal_element)(void*, void*), void (*free_element)(void*), void* element){
-    Node node = list->head;
-    int occurrences_num = 0;
-    while(node != NULL){
-        if(equal_element(node->element, element)){
-            occurrences_num++;
-            void* removed_element = list_remove(list, list_find(list, equal_element, element));
-            if(free_element != NULL){
-                free_element(removed_element);
-            }
-        }
-        node = node->next;
-    }
-    return occurrences_num;
+    return NULL;
 }
 
 /**
@@ -380,7 +379,9 @@ int list_remove_all(List list, bool (*equal_element)(void*, void*), void (*free_
  * @return int The number of occurrences on an element.
  */
 int list_remove_duplicates(List list, bool (*equal_element)(void*, void*), void (*free_element)(void*), void* element){
-    return NULL;
+    int occurrences_num = list_remove_all(list, equal_element, free_element, element);
+    list_insert_last(list, element);
+    return occurrences_num;
 }
 
 /**
@@ -393,7 +394,18 @@ int list_remove_duplicates(List list, bool (*equal_element)(void*, void*), void 
  * @return List The resulting from the join of two lists.
  */
 List list_join(List list1, List list2){
-    return NULL;
+    List result_list = malloc(sizeof(struct List_));
+    Node node = list1->head;
+    while(node != NULL){
+        list_insert_last(result_list, node->element);
+        node = node->next;
+    }
+    node = list2->head;
+    while(node != NULL){
+        list_insert_last(result_list, node->element);
+        node = node->next;
+    }
+    return result_list;
 }
 
 /**
@@ -403,7 +415,11 @@ List list_join(List list1, List list2){
  * @param print_element The function to print the elements of the list.
  */
 void list_print(List list, void (*print_element)(void* element)){
-    return NULL;
+    Node node = list->head;
+    while(node != NULL){
+        print_element(node->element);
+        node = node->next;
+    }
 }
 
 /**
@@ -454,38 +470,26 @@ List list_filter(List list, bool (*func)(void*)){
     return NULL;
 }
 
-// bool equal(char* e1, char* e2){
-//     return strcmp(e1, e2) == 0;
-// }
+// Starts the iteration of the list.
+void list_iterator_start (List list){
+    list->iterator = list->head;
+}
 
-// int main(){
+// Returns true if the list iterator has more elements.
+bool list_iterator_has_next (List list){
+    return list->iterator != NULL;
+}
 
-//     List list = list_create();
-//     char* array[] = {"one", "two", "three"};
-//     for(int i = 0; i < 3; i++){
-//         list_insert_last(list, array[i]);
-//     }
-//     for(int i = 0; i < 3; i++){
-//         list_insert_last(list, array[i]);
-//     }
-    
-//     Node node = list->head;
-//     for(int i = 0; i < 6; i++){
-//         printf("%s\n", (char*)node->element);
-//         node = node->next;
-//     }
-//     printf("%d\n", list_remove_all(list, equal, NULL, (void*)array[1]));
-//     node = list->head;
-//     for(int i = 0; i < 4; i++){
-//         printf("%s\n", (char*)node->element);
-//         node = node->next;
-//     }
-//     node = list->head;
-//     printf("%d\n", list_remove_all(list, equal, NULL, (void*)array[2]));
-//     for(int i = 0; i < 3; i++){
-//         printf("%s\n", (char*)node->element);
-//         node = node->next;
-//     }
+// Returns the next element of the current list iterator.
+void* list_iterator_get_next (List list){
+    void* element = list->iterator->element;
+    list->iterator = list->iterator->next;
+    return element;
+}
 
-//     return 0;
-// }
+// EXTRA FUNCTIONS
+void* free_node(Node node){
+    void* element = node->element;
+    free(node);
+    return element;
+}

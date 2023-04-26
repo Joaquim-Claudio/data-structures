@@ -1,7 +1,0 @@
-bin/*
-*/bin/*
-cov/*
-*gcov
-*gcno
-*gcda
-*.o
