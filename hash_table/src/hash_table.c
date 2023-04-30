@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "hash_table.h"
 
 typedef struct{
@@ -19,17 +20,34 @@ struct t_HashTable{
 
 /// Creates a new hash table.
 HashTable hash_table_create(int size, int (*hash)(void*, int), bool (*key_equal)(void*, void*), void(*key_destroy)(void*)){
-    return NULL;
+    HashTable htable = malloc(sizeof(struct t_HashTable));
+    htable->size = size;
+    htable->num_elements = 0;
+    htable->hash = hash;
+    htable->key_equal = key_equal;
+    htable->key_destroy = key_destroy;
+    htable->table = malloc(sizeof(List) * size);
+    for(int i = 0; i < size; i++){
+        htable->table[i] = list_create();
+    }
+    return htable;
 }
 
 // Destroys a hash table.
 void hash_table_destroy(HashTable table, void (*value_destroy)(void*)){
-    return NULL;
+    free(table->hash);
+    free(table->key_destroy);
+    free(table->key_equal);
+    for(int i = 0; i < table->size; i++){
+        list_destroy(table->table[i], NULL);
+    }
+    free(table->table);
+    free(table);
 }
 
 // Returns true iff the hash table contains no elements.
 bool hash_table_is_empty(HashTable table){
-    return NULL;
+    return table->num_elements == 0;
 }
 
 // Inserts a new key-value pair into the hash table.
