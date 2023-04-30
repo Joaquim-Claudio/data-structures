@@ -35,7 +35,7 @@ HashTable hash_table_create(int size, int (*hash)(void*, int), bool (*key_equal)
 
 // Destroys a hash table.
 void hash_table_destroy(HashTable table, void (*value_destroy)(void*)){
-    free(table->hash);
+    // free(table->hash);
     free(table->key_destroy);
     free(table->key_equal);
     for(int i = 0; i < table->size; i++){

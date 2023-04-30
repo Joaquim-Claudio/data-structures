@@ -5,6 +5,7 @@ BUILD:=debug_cov
 CC=gcc
 SRC=./src
 BIN=./bin
+UTILS=./utils
 TESTS_SRC=./tests
 TESTS_BIN=$(TESTS_SRC)/bin
 COV=$(TESTS_BIN)/cov
@@ -45,11 +46,14 @@ hash_table: $(BIN)/hash_table.o $(TESTS_BIN)/test_hash_table
 $(BIN)/hash_table.o: $(SRC)/hash_table.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
+
+$(BIN)/singly_linked_list.o: $(UTILS)/singly_linked_list.c
+	$(CC) -c $(CFLAGS) $< -o $@
 ## Tests
 
 # Hash Table
 
-$(TESTS_BIN)/test_hash_table: $(TESTS_SRC)/test_hash_table.c $(BIN)/hash_table.o $(UNITY)
+$(TESTS_BIN)/test_hash_table: $(TESTS_SRC)/test_hash_table.c $(BIN)/hash_table.o $(BIN)/singly_linked_list.o $(UNITY)
 	$(CC) $(CFLAGS) $(TESTS_FLAGS) $^ -o $@
 
 # Compile Unity
