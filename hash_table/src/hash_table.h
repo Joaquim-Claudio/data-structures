@@ -15,6 +15,9 @@ HashTable hash_table_create(int size, int (*hash)(void*, int), bool (*key_equal)
 // Destroys a hash table.
 void hash_table_destroy(HashTable table, void (*value_destroy)(void*));
 
+// Returns true iff the hash table contains no elements.
+bool hash_table_is_empty(HashTable table);
+
 // Inserts a new key-value pair into the hash table.
 void hash_table_insert(HashTable table, void* key, void* value);
 
@@ -29,9 +32,6 @@ void* hash_table_update(HashTable table, void* key, void* value);
 
 // Returns the number of elements in the hash table.
 int hash_table_size(HashTable table);
-
-// Returns true iff the hash table contains no elements.
-bool hash_table_is_empty(HashTable table);
 
 // Returns true iff the hash table contains no elements.
 List hash_table_keys(HashTable table);

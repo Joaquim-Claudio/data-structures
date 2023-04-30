@@ -1,4 +1,4 @@
-#include "hash-table.h"
+#include "hash_table.h"
 
 typedef struct{
     void* key;
@@ -17,13 +17,18 @@ struct t_HashTable{
     int (*hash)(void*, int);
 };
 
-// Creates a new hash table.
+/// Creates a new hash table.
 HashTable hash_table_create(int size, int (*hash)(void*, int), bool (*key_equal)(void*, void*), void(*key_destroy)(void*)){
     return NULL;
 }
 
 // Destroys a hash table.
 void hash_table_destroy(HashTable table, void (*value_destroy)(void*)){
+    return NULL;
+}
+
+// Returns true iff the hash table contains no elements.
+bool hash_table_is_empty(HashTable table){
     return NULL;
 }
 
@@ -49,11 +54,6 @@ void* hash_table_update(HashTable table, void* key, void* value){
 
 // Returns the number of elements in the hash table.
 int hash_table_size(HashTable table){
-    return NULL;
-}
-
-// Returns true iff the hash table contains no elements.
-bool hash_table_is_empty(HashTable table){
     return NULL;
 }
 
