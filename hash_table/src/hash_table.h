@@ -4,9 +4,6 @@
 #include <stdbool.h>
 #include "../utils/list.h"
 
-
-#define DEFAULT_SIZE 127
-
 typedef struct t_HashTable* HashTable;
 
 // Creates a new hash table.

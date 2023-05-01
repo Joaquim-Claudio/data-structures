@@ -35,24 +35,40 @@ HashTable hash_table_create(int size, int (*hash)(void*, int), bool (*key_equal)
 
 // Destroys a hash table.
 void hash_table_destroy(HashTable table, void (*value_destroy)(void*)){
-    // free(table->hash);
-    free(table->key_destroy);
-    free(table->key_equal);
     for(int i = 0; i < table->size; i++){
+        while(!list_is_empty(table->table[i])){
+            void* value = list_remove_last(table->table[i]);
+            if(value_destroy != NULL){
+                value_destroy(value);
+            }
+        }
         list_destroy(table->table[i], NULL);
     }
     free(table->table);
     free(table);
 }
 
-// Returns true iff the hash table contains no elements.
+// Returns true if the hash table contains no elements.
 bool hash_table_is_empty(HashTable table){
     return table->num_elements == 0;
 }
 
+// Auxiliar function
+        Item create_item(void* key, void* value){
+            Item item = malloc(sizeof(t_Item));
+            item->key = key;
+            item->value = value;
+            return item;
+        }
+// End of auxiliar function
+
 // Inserts a new key-value pair into the hash table.
 void hash_table_insert(HashTable table, void* key, void* value){
-    return NULL;
+    int index = table->hash(key, table->size);
+    List list = table->table[index];
+    Item item = create_item(key, value);
+    list_insert_last(list, item);
+    table->num_elements++;
 }
 
 // Removes a key-value pair from the hash table.
@@ -62,6 +78,11 @@ void* hash_table_remove(HashTable table, void* key){
 
 // Returns the value associated with the key.
 void* hash_table_get(HashTable table, void* key){
+    int index = table->hash(key, table->size);
+    Item item = list_get_last(table->table[index]);
+    if(item != NULL && item->key == key){
+        return item->value;
+    }
     return NULL;
 }
 
@@ -72,10 +93,10 @@ void* hash_table_update(HashTable table, void* key, void* value){
 
 // Returns the number of elements in the hash table.
 int hash_table_size(HashTable table){
-    return NULL;
+    return table->num_elements;
 }
 
-// Returns true iff the hash table contains no elements.
+// Returns true if the hash table contains no elements.
 List hash_table_keys(HashTable table){
     return NULL;
 }

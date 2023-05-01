@@ -1,13 +1,13 @@
 #include "unity/unity.h"
-
 #include "../src/hash_table.h"
-
 #include <stdlib.h>
 #include <string.h>
 // #include <mcheck.h>
 #include <stdbool.h>
 
+#define DEFAULT_SIZE 127
 HashTable htable;
+
 
 int numbers[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 char* key_num[] = {"num_one", "num_two", "num_three", "num_four", "num_five", "num_six", "num_seven", "num_eight", "num_nine", "num_ten"};
@@ -29,8 +29,12 @@ void setUp(void) {
     htable = hash_table_create(DEFAULT_SIZE, (int(*)(void*, int))hash_function, NULL, NULL);
 }
 
+void value_destroy(void* element){
+    free(element);
+}
+
 void tearDown(void) {
-    hash_table_destroy(htable, NULL);
+    hash_table_destroy(htable, (void(*)(void*))value_destroy);
 }
 
 /*******************************************************************************
@@ -43,7 +47,7 @@ bool is_equal(void* a, void* b) {
 
 void insert_numbers(int start, int end) {
     for (int i = start - 1; i < end; i++) {
-        hash_table_insert(htable, &numbers[i] ,&numbers[i]);
+        hash_table_insert(htable, &key_num[i] ,&numbers[i]);
     }
 }
 
@@ -57,7 +61,7 @@ int* number_address_of(int number) {
 
 void insert_strings(int start, int end) {
     for (int i = start - 1; i < end; i++) {
-       hash_table_insert(htable, &strings[i], &strings[i]);
+       hash_table_insert(htable, &key_string[i], &strings[i]);
     }
 }
 
@@ -135,9 +139,9 @@ void test_hash_table_remove() {
 int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_hash_table_is_empty);
-    // RUN_TEST(test_hash_table_size);
-    // RUN_TEST(test_hash_table_get);
-    // RUN_TEST(test_hash_table_insert);
+    RUN_TEST(test_hash_table_size);
+    RUN_TEST(test_hash_table_get);
+    RUN_TEST(test_hash_table_insert);
     // RUN_TEST(test_hash_table_remove);
     return UNITY_END();
 }
