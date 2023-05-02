@@ -143,7 +143,7 @@ int list_find(List list, bool (*equal)(void*, void*), void* element){
     if(list_is_empty(list)){
         return -1;
     }
-    if(element == list->head->element){
+    if(equal(list->head->element, element)){
         return 0;
     }
     Node this_node = list->head->next;

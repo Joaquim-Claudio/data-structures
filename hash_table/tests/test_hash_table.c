@@ -108,6 +108,7 @@ void test_hash_table_size() {
 void test_hash_table_get() {
     TEST_ASSERT_NULL(hash_table_get(htable, key_num[0]));
     insert_numbers(1, 5);
+    TEST_ASSERT_EQUAL(5, hash_table_size(htable));
     TEST_ASSERT_EQUAL(number_address_of(2), hash_table_get(htable, key_num[1]));
 }
 
