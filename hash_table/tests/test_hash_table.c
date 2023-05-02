@@ -19,7 +19,7 @@ int hash_function(void* key, int size){
     int result = 0, a = 127;
     char* key_str = (char*)key;
     for(int i = 0; key_str[i] != '\0'; i++){
-        result = (result*a + key_str[i]) % size;
+        result = (result * a + key_str[i]) % size;
     }
     return result;
 }
