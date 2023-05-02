@@ -156,10 +156,10 @@ void test_hash_table_keys(){
     List keys_list = hash_table_keys(htable);
     TEST_ASSERT_EQUAL(6, list_size(keys_list));
     TEST_ASSERT_EQUAL(key_num[0], list_get(keys_list, 0));
-    TEST_ASSERT_EQUAL(key_num[1], list_get(keys_list, 1));
-    TEST_ASSERT_EQUAL(key_num[2], list_get(keys_list, 2));
-    TEST_ASSERT_EQUAL(key_num[3], list_get(keys_list, 3));
-    TEST_ASSERT_EQUAL(key_num[4], list_get(keys_list, 4));
+    TEST_ASSERT_EQUAL(key_num[1], list_get(keys_list, 3));
+    TEST_ASSERT_EQUAL(key_num[2], list_get(keys_list, 1));
+    TEST_ASSERT_EQUAL(key_num[3], list_get(keys_list, 4));
+    TEST_ASSERT_EQUAL(key_num[4], list_get(keys_list, 2));
     list_destroy(keys_list, NULL);
 }
 
