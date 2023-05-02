@@ -126,15 +126,32 @@ int hash_table_size(HashTable table){
 
 // Updates the value associated with the key.
 void* hash_table_update(HashTable table, void* key, void* value){
-    return NULL;
+    int index = table->hash(key, table->size);
+    int pos = get_list_position(table->table[index], key);
+    Item item = list_get(table->table[index], pos);
+    if(item == NULL){
+        hash_table_insert(table, key, value);
+        return NULL;
+    }
+    void* old_value = item->value;
+    item->value = value;
+    return old_value;
 }
 
-// Returns the keys of the hash table.
+// Returns all the keys of the hash table.
 List hash_table_keys(HashTable table){
-    return NULL;
+    List keys_list = list_create();
+    for(int i = 0; i < table->size; i++){
+        list_iterator_start(table->table[i]);
+        while(list_iterator_has_next(table->table[i])){
+            Item item = list_iterator_get_next(table->table[i]);
+            list_insert_last(keys_list, item->key);
+        }
+    }
+    return keys_list;
 }
 
-// Returns the values of the hash table.
+// Returns all the values of the hash table.
 List hash_table_values(HashTable table){
     return NULL;
 }
