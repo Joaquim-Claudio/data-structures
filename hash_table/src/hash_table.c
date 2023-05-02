@@ -121,7 +121,6 @@ void* hash_table_get(HashTable table, void* key){
 
 // Returns the number of elements in the hash table.
 int hash_table_size(HashTable table){
-    int pos = table->size;
     return table->num_elements;
 }
 
