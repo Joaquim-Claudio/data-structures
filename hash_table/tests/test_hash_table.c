@@ -47,7 +47,7 @@ bool is_equal(void* a, void* b) {
 
 void insert_numbers(int start, int end) {
     for (int i = start - 1; i < end; i++) {
-        hash_table_insert(htable, &key_num[i] ,&numbers[i]);
+        hash_table_insert(htable, key_num[i] ,&numbers[i]);
     }
 }
 
@@ -61,7 +61,7 @@ int* number_address_of(int number) {
 
 void insert_strings(int start, int end) {
     for (int i = start - 1; i < end; i++) {
-       hash_table_insert(htable, &key_string[i], &strings[i]);
+       hash_table_insert(htable, key_string[i], &strings[i]);
     }
 }
 
@@ -106,22 +106,22 @@ void test_hash_table_size() {
 }
 
 void test_hash_table_get() {
-    TEST_ASSERT_NULL(hash_table_get(htable, &key_num[0]));
+    TEST_ASSERT_NULL(hash_table_get(htable, key_num[0]));
     insert_numbers(1, 5);
-    TEST_ASSERT_EQUAL(number_address_of(2), hash_table_get(htable, &key_num[1]));
+    TEST_ASSERT_EQUAL(number_address_of(2), hash_table_get(htable, key_num[1]));
 }
 
 void test_hash_table_insert() {
     TEST_ASSERT_EQUAL(0, hash_table_size(htable));
-    TEST_ASSERT_NULL(hash_table_get(htable, &key_num[0]));
-    hash_table_insert(htable, &key_num[0],&numbers[0]);
+    TEST_ASSERT_NULL(hash_table_get(htable, key_num[0]));
+    hash_table_insert(htable, key_num[0], &numbers[0]);
     TEST_ASSERT_EQUAL(1, hash_table_size(htable));
-    TEST_ASSERT_EQUAL(&numbers[0], hash_table_get(htable, &key_num[0]));
+    TEST_ASSERT_EQUAL(&numbers[0], hash_table_get(htable, key_num[0]));
     insert_strings(1, 3);
-    hash_table_insert(htable, &key_num[1],&numbers[1]);
+    hash_table_insert(htable, key_num[1], &numbers[1]);
     TEST_ASSERT_EQUAL(5, hash_table_size(htable));
-    TEST_ASSERT_EQUAL(&numbers[1], hash_table_get(htable, &key_num[1]));
-    hash_table_insert(htable, key_num[2],&numbers[2]);
+    TEST_ASSERT_EQUAL(&numbers[1], hash_table_get(htable, key_num[1]));
+    hash_table_insert(htable, key_num[2], &numbers[2]);
     TEST_ASSERT_EQUAL(6, hash_table_size(htable));
     TEST_ASSERT_EQUAL(&numbers[2], hash_table_get(htable, key_num[2]));
 }
@@ -129,10 +129,10 @@ void test_hash_table_insert() {
 void test_hash_table_remove() {
     TEST_ASSERT_NULL(hash_table_remove(htable, &key_num[3]));
     insert_strings(1, 6);
-    TEST_ASSERT_EQUAL(string_address_of(1), hash_table_remove(htable, &key_string[0]));
-    TEST_ASSERT_EQUAL(string_address_of(6), hash_table_remove(htable, &key_string[5]));
-    TEST_ASSERT_EQUAL(string_address_of(4), hash_table_remove(htable, &key_string[3]));
-    TEST_ASSERT_EQUAL(string_address_of(5), hash_table_remove(htable, &key_string[4]));
+    TEST_ASSERT_EQUAL(string_address_of(6), hash_table_remove(htable, key_string[5]));
+    TEST_ASSERT_EQUAL(string_address_of(4), hash_table_remove(htable, key_string[3]));
+    TEST_ASSERT_EQUAL(string_address_of(5), hash_table_remove(htable, key_string[4]));
+    TEST_ASSERT_EQUAL(string_address_of(1), hash_table_remove(htable, key_string[0]));
     TEST_ASSERT_EQUAL(2, hash_table_size(htable));
 }
 
@@ -142,6 +142,6 @@ int main(void) {
     RUN_TEST(test_hash_table_size);
     RUN_TEST(test_hash_table_get);
     RUN_TEST(test_hash_table_insert);
-    // RUN_TEST(test_hash_table_remove);
+    RUN_TEST(test_hash_table_remove);
     return UNITY_END();
 }
