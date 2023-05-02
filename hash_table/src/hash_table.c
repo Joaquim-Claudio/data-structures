@@ -140,6 +140,9 @@ void* hash_table_update(HashTable table, void* key, void* value){
 
 // Returns all the keys of the hash table.
 List hash_table_keys(HashTable table){
+    if(hash_table_is_empty(table)){
+        return NULL;
+    }
     List keys_list = list_create();
     for(int i = 0; i < table->size; i++){
         list_iterator_start(table->table[i]);
