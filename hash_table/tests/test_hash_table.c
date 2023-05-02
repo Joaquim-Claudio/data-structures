@@ -137,6 +137,18 @@ void test_hash_table_remove() {
     TEST_ASSERT_EQUAL(2, hash_table_size(htable));
 }
 
+void test_hash_table_update(){
+    TEST_ASSERT_NULL(hash_table_update(htable, key_string[0], &strings[0]));
+    TEST_ASSERT_EQUAL(1, hash_table_size(htable));
+    insert_numbers(1, 3);
+    TEST_ASSERT_EQUAL(4, hash_table_size(htable));
+    TEST_ASSERT_EQUAL(number_address_of(2), hash_table_update(htable, &key_num[1], &numbers[3]));
+    TEST_ASSERT_EQUAL(number_address_of(4), hash_table_get(htable, &key_num[1]));
+    TEST_ASSERT_EQUAL(string_address_of(1), hash_table_update(htable, key_string[0], &numbers[4]));
+    TEST_ASSERT_EQUAL(number_address_of(5), hash_table_get(htable, key_string[0]));
+    TEST_ASSERT_EQUAL(4, hash_table_size(htable));
+}
+
 int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_hash_table_is_empty);
@@ -144,5 +156,6 @@ int main(void) {
     RUN_TEST(test_hash_table_get);
     RUN_TEST(test_hash_table_insert);
     RUN_TEST(test_hash_table_remove);
+    RUN_TEST(test_hash_table_update);
     return UNITY_END();
 }
