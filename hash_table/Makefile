@@ -56,6 +56,7 @@ $(BIN)/singly_linked_list.o: $(UTILS)/singly_linked_list.c
 $(TESTS_BIN)/test_hash_table: $(TESTS_SRC)/test_hash_table.c $(BIN)/hash_table.o $(BIN)/singly_linked_list.o $(UNITY)
 	$(CC) $(CFLAGS) $(TESTS_FLAGS) $^ -o $@
 
+
 # Compile Unity
 
 $(UNITY): $(UNITY_SRC)/unity.c
