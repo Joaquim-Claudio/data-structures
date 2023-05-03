@@ -15,6 +15,7 @@ struct t_HashTable{
     List* table;
     bool (*key_equal)(void*, void*);
     void (*key_destroy)(void*);
+    void (*value_destroy)(void*);
     int (*hash)(void*, int);
 };
 
@@ -44,20 +45,21 @@ struct t_HashTable{
             free(aux_item);
             return pos;
         }
-
+        
 /*******************************************************************************
  End helper functions.
  ******************************************************************************/
 
 
 /// Creates a new hash table.
-HashTable hash_table_create(int size, int (*hash)(void*, int), bool (*key_equal)(void*, void*), void(*key_destroy)(void*)){
+HashTable hash_table_create(int size, int (*hash)(void*, int), bool (*key_equal)(void*, void*), void(*key_destroy)(void*), void(*value_destroy)(void*)){
     HashTable htable = malloc(sizeof(struct t_HashTable));
     htable->size = size;
     htable->num_elements = 0;
     htable->hash = hash;
     htable->key_equal = key_equal;
     htable->key_destroy = key_destroy;
+    htable->value_destroy = value_destroy;
     htable->table = malloc(sizeof(List) * size);
     for(int i = 0; i < size; i++){
         htable->table[i] = list_create();
@@ -66,12 +68,12 @@ HashTable hash_table_create(int size, int (*hash)(void*, int), bool (*key_equal)
 }
 
 // Destroys a hash table.
-void hash_table_destroy(HashTable table, void (*value_destroy)(void*)){
+void hash_table_destroy(HashTable table){
     for(int i = 0; i < table->size; i++){
         while(!list_is_empty(table->table[i])){
             void* value = list_remove_last(table->table[i]);
-            if(value_destroy != NULL){
-                value_destroy(value);
+            if(table->value_destroy != NULL){
+                table->value_destroy(value);
             }
         }
         list_destroy(table->table[i], NULL);
@@ -156,7 +158,18 @@ List hash_table_keys(HashTable table){
 
 // Returns all the values of the hash table.
 List hash_table_values(HashTable table){
-    return NULL;
+   if(hash_table_is_empty(table)){
+        return NULL;
+    }
+    List values_list = list_create();
+    for(int i = 0; i < table->size; i++){
+        list_iterator_start(table->table[i]);
+        while(list_iterator_has_next(table->table[i])){
+            Item item = list_iterator_get_next(table->table[i]);
+            list_insert_last(values_list, item->value);
+        }
+    }
+    return values_list;
 }
 
 // Returns the entries of the hash table.
@@ -164,6 +177,22 @@ List hash_table_entries(HashTable table){
     return NULL;
 }
 
-void hash_table_rehash(HashTable table, int new_size){
-    return NULL;
+void hash_table_rehash(HashTable htable, int new_size) {
+    if (new_size <= 0) {
+        return;
+    }
+    HashTable new_htable = hash_table_create(new_size, htable->hash, htable->key_equal, htable->key_destroy, htable->value_destroy);
+    for (int i = 0; i < htable->size; i++){
+        List list = htable->table[i];
+        list_iterator_start(list);
+        while (list_iterator_has_next(list)) {
+            Item item = list_iterator_get_next(list);
+            hash_table_insert(new_htable, item->key, item->value);
+        }
+    }
+    hash_table_destroy(htable);
+    htable->size = new_htable->size;
+    htable->num_elements = new_htable->num_elements;
+    htable->table = new_htable->table;
+    free(new_htable);
 }

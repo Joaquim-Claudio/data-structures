@@ -7,10 +7,10 @@
 typedef struct t_HashTable* HashTable;
 
 // Creates a new hash table.
-HashTable hash_table_create(int size, int (*hash)(void*, int), bool (*key_equal)(void*, void*), void(*key_destroy)(void*));
+HashTable hash_table_create(int size, int (*hash)(void*, int), bool (*key_equal)(void*, void*), void(*key_destroy)(void*), void(*value_destroy)(void*));
 
 // Destroys a hash table.
-void hash_table_destroy(HashTable table, void (*value_destroy)(void*));
+void hash_table_destroy(HashTable table);
 
 // Returns true if the hash table contains no elements.
 bool hash_table_is_empty(HashTable table);

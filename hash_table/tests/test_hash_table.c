@@ -25,16 +25,16 @@ int hash_function(void* key, int size){
 }
 // End of hash function
 
-void setUp(void) {
-    htable = hash_table_create(DEFAULT_SIZE, (int(*)(void*, int))hash_function, NULL, NULL);
-}
-
 void value_destroy(void* element){
     free(element);
 }
 
+void setUp(void) {
+    htable = hash_table_create(DEFAULT_SIZE, (int(*)(void*, int))hash_function, NULL, NULL, (void(*)(void*))value_destroy);
+}
+
 void tearDown(void) {
-    hash_table_destroy(htable, (void(*)(void*))value_destroy);
+    hash_table_destroy(htable);
 }
 
 /*******************************************************************************
@@ -163,6 +163,34 @@ void test_hash_table_keys(){
     list_destroy(keys_list, NULL);
 }
 
+void test_hash_table_values(){
+    TEST_ASSERT_NULL(hash_table_values(htable));
+    insert_numbers(1, 6);
+    List values_list = hash_table_values(htable);
+    TEST_ASSERT_EQUAL(6, list_size(values_list));
+    TEST_ASSERT_EQUAL(&numbers[0], list_get(values_list, 0));
+    TEST_ASSERT_EQUAL(&numbers[1], list_get(values_list, 3));
+    TEST_ASSERT_EQUAL(&numbers[2], list_get(values_list, 1));
+    TEST_ASSERT_EQUAL(&numbers[3], list_get(values_list, 4));
+    TEST_ASSERT_EQUAL(&numbers[4], list_get(values_list, 2));
+    list_destroy(values_list, NULL);
+}
+
+void test_hash_table_rehash(){
+    TEST_ASSERT_NULL(hash_table_keys(htable));
+    insert_numbers(1, 3);
+    List keys_list_hashed = hash_table_keys(htable);
+    TEST_ASSERT_EQUAL(key_num[0], list_get(keys_list_hashed, 0));
+    TEST_ASSERT_EQUAL(key_num[1], list_get(keys_list_hashed, 2));
+    list_destroy(keys_list_hashed, NULL);
+    hash_table_rehash(htable, 131);
+    List keys_list_rehashed = hash_table_keys(htable);
+    TEST_ASSERT_EQUAL(key_num[0], list_get(keys_list_rehashed, 1));
+    TEST_ASSERT_EQUAL(key_num[1], list_get(keys_list_rehashed, 2));
+    TEST_ASSERT_EQUAL(key_num[2], list_get(keys_list_rehashed, 0));
+    list_destroy(keys_list_rehashed, NULL);
+}
+
 int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_hash_table_is_empty);
@@ -172,5 +200,7 @@ int main(void) {
     RUN_TEST(test_hash_table_remove);
     RUN_TEST(test_hash_table_update);
     RUN_TEST(test_hash_table_keys);
+    RUN_TEST(test_hash_table_values);
+    RUN_TEST(test_hash_table_rehash);
     return UNITY_END();
 }
